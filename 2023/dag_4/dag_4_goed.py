@@ -1,5 +1,4 @@
 from re import split
-from copy import deepcopy
 from pprint import pprint
 
 
@@ -218,7 +217,6 @@ for i, y in enumerate(data):
            for z, x in enumerate(split(r"[:|]", y)))
     new_data.append(row)
     
-    
 total = 0
 for header, winning_nums, card_nums in new_data:
     card_total = 0
@@ -234,6 +232,7 @@ print(total)
 print("------PART 2-----------")
 
 card_adds: dict[int, list[int]] = {}
+
 for header, winning_nums, card_nums in new_data:
     x = []
     count = 0
@@ -242,6 +241,8 @@ for header, winning_nums, card_nums in new_data:
             count += 1
             x.append(header + count)
     card_adds[header] = x
+    
+# pprint(card_adds, sort_dicts=False)
 
 first = True
 newest_data = []
