@@ -25,7 +25,6 @@ def check_map_val(ranges, mapped_val):
             return (dest_start + (mapped_val - src_start))
     return mapped_val
 
-
 seed_dicts = []
 
 for seed in seeds:
