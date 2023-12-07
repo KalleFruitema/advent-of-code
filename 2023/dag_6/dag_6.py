@@ -17,21 +17,19 @@ def content_two():
 
 
 def part_one(content):
-    full_possibilities = []
+    full_possibilities = 1
     for time, dist_record in content:
         record_possibilities = 0
         for speed in range(time):
             dist = (time - speed) * speed
             if dist > dist_record:
                 record_possibilities += 1
-        full_possibilities.append(record_possibilities)
-    total = reduce(int.__mul__, full_possibilities)
-    return total
+        full_possibilities *= record_possibilities
+    return full_possibilities
 
 
 def part_two(content):
     return part_one(content)
-    # return part_one(n_content)
     
 
 total1 = part_one(content_one())
