@@ -35,7 +35,8 @@ for curr_loc in starting_locs:
             break
     get_to_z.append(steps)
     which_z.append(curr_loc)
-   
+
+# tweede loop voor demonstratie
 to_z_again = [] 
 which_z2 = []
 for curr_loc in which_z:
