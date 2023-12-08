@@ -2,6 +2,10 @@ from pprint import pprint
 import numpy as np
 
 
+class ExitLoop(Exception):
+    pass
+
+
 with open(r'2023/dag_5/input_test.txt') as file:
     content = [line.strip() for line in file]
 
@@ -39,37 +43,67 @@ def find_intersection(range1, range2):
     return range(max_val, min_val + 1)
 
 
-def check_seedrange(seedranges, map_ranges):
-    if type(seedranges) != list:
-        seedranges = [seedranges]
-    i = 0
-    while True:
-        for seed_part in seedranges:
-            unused_list = []
-            sect_list = []
-            for dest_range, src_range in map_ranges:
-                print(seed_part, src_range)
-                intersection = find_intersection(seed_part, src_range)
-                print(intersection)
-                if intersection:
-                    dest_intersection = range(dest_range[intersection[0] - src_range[0]], 
-                        dest_range[intersection[0] - src_range[0] + len(intersection)])
-                    if intersection[0] == seed_part[0]:
-                        if intersection[-1] == seed_part[-1]:
-                            # seed fully contained
-                            ...
-                        else:
-                            # left contained
-                            ...
-                    elif intersection[-1] == seed_part[-1]:
-                        # right fully contained
-                        ...
-                    else:
-                        # source fully contained
-                        ...
-
-        break
+def len_ranges(*range: range):
+    return sum(len(i) for i in range)
 
 
-check_seedrange(seeds[0], content[0])
+def check_seedrange(seedrange_lst, mapranges, prints=True):
+    if type(seedrange_lst) != list:
+        seedrange_lst = [seedrange_lst]
+    unused = seedrange_lst.copy()
+    used = []
+
+    for seedrange in unused:
+        for dest_range, src_range in mapranges:
+            intersect = find_intersection(seedrange, src_range)
+            if prints:
+                print(intersect)
             
+            if intersect:
+                dest_intersect = range(dest_range[intersect[0] - src_range[0]], 
+                                        dest_range[intersect[0] - src_range[0] + len(intersect)])
+                used.append(dest_intersect)
+                if intersect[0] == seedrange[0]:
+                    if intersect[-1] == seedrange[-1]:
+                        # seed fully contained
+                        break
+                    else:
+                        # left contained
+                        unused.append(range(intersect[-1] + 1, 
+                                            seedrange[-1] + 1))
+                elif intersect[-1] == seedrange[-1]:
+                    # right fully contained
+                    unused.append(range(seedrange[0],
+                                        intersect[0]))
+                else:
+                    # source fully contained
+                    unused.append(range(seedrange[0],
+                                        intersect[0]))
+                    unused.append(range(intersect[-1] + 1, 
+                                        seedrange[-1] + 1))
+    return used
+
+seed_dicts = []
+for seed in seeds:
+    # print(seed)
+    soil = check_seedrange(seed, n_content[0])
+    print("VOOR FUNTIE", soil)
+    fertilizer = check_seedrange(soil, n_content[1], prints=True)
+    print(fertilizer)
+    # water = check_seedrange(fertilizer, n_content[2])
+    # light = check_seedrange(water, n_content[3])
+    # temperature = check_seedrange(light, n_content[4])
+    # humidity = check_seedrange(temperature, n_content[5])
+    # location = check_seedrange(humidity, n_content[6])
+
+    # seed_dicts.append({
+    #     "soil": soil,
+    #     "fertilizer": fertilizer,
+    #     "water": water,
+    #     "light": light,
+    #     "temperature": temperature,
+    #     "humidity": humidity,
+    #     "location": location
+    # })
+    
+# pprint(seed_dicts, sort_dicts=False)    
