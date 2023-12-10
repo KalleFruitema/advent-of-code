@@ -1,66 +1,54 @@
+from Seedrange import Seedrange
+from Maprange import Maprange
 from pprint import pprint
-import numpy as np
 
 
-with open(r'2023/dag_5/input.txt') as file:
-    content = [line.strip() for line in file]
+def parse_input() -> tuple[list[Seedrange], dict[str, list[Maprange]]]:
+    with open(r'2023/dag_5/input_test.txt') as file:
+        content = [line.strip() for line in file]
 
-seeds, content = content[0].split(":")[1].strip().split(" "), content[1:]
+    seeds, content = content[0].split(":")[1].strip().split(" "), content[1:]
 
-seeds = np.array([int(seed) for seed in seeds])
-seeds_length = int(len(seeds)/2)
-seeds = np.reshape(seeds, (seeds_length, 2))
+    seeds = [Seedrange(int(seeds[i]), int(seeds[i+1])) 
+            for i in range(0, len(seeds), 2)]
 
-print("Parsing starting...")
-
-n_content = []
-for line in content:
-    if line == '':
-        n_content.append([])
-    else:
-        n_content[-1].append(line)
-
-for i, line in enumerate(n_content):
-    n_content[i] = [[int(element) for element in x.split(" ")] 
-                  for y, x in enumerate(line) if y != 0]
-
-
-def check_map_val(ranges, mapped_val):
-    for dest_start, src_start, length in ranges:
-        if src_start <= mapped_val < src_start + length:
-            return (dest_start + (mapped_val - src_start))
-    return mapped_val
-
-
-seed_dicts = []
-pprint(seeds)
-for seed_range, seed_len in seeds:
-    for seed in range(seed_range, seed_range + seed_len):
-        soil = check_map_val(n_content[0], seed)
-        fertilizer = check_map_val(n_content[1], soil)
-        water = check_map_val(n_content[2], fertilizer)
-        light = check_map_val(n_content[3], water)
-        temperature = check_map_val(n_content[4], light)
-        humidity = check_map_val(n_content[5], temperature)
-        location = check_map_val(n_content[6], humidity)
+    map_book = {}
+    book_page = {}
+    for line in content[1:]:
+        if line == "":
+            map_book.update(book_page)
+            book_page = {}
+        elif "-" in line:
+            curr_page = line.split("-")[2].split(" ")[0]
+            book_page[curr_page] = []
+        else:
+            book_page[curr_page].append(Maprange(*[int(i) for i in line.split(" ")]))
+    map_book.update(book_page)
     
-        seed_dicts.append({
-            "soil": soil,
-            "fertilizer": fertilizer,
-            "water": water,
-            "light": light,
-            "temperature": temperature,
-            "humidity": humidity,
-            "location": location
-        })
+    return seeds, map_book
 
-print("Finding lowest...")
 
-lowest = 9999999999999999999999999999999999999
-for seed in seed_dicts:
-    loc = seed["location"]
-    if loc < lowest:
-        lowest = loc
-# pprint(seed_dicts, sort_dicts=False)
+def ffffffffffffffff(seed_lst: Seedrange | list[Seedrange], maps: list[Maprange]):
+    if not isinstance(seed_lst, list):
+        seed_lst = [seed_lst]
+    
+    mapped = []
+    for map_range in maps:
+        n_seed_lst = []
+        for seed in seed_lst:
+            print(seed, map_range)
+            seed.intersect(map_range)
+        
 
-print(lowest)
+
+def main():
+    seeds, map_book = parse_input()
+    for title, page in map_book.items():
+        print(f"\n{title}")
+        for seed in seeds:
+            ffffffffffffffff(seed, page)
+    
+    
+if __name__ == "__main__":
+    main()
+    
