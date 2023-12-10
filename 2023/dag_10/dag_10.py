@@ -1,4 +1,5 @@
 from pprint import pprint
+from time import perf_counter
 
 
 def print_grid(grid: list[list[str]]):
@@ -7,7 +8,7 @@ def print_grid(grid: list[list[str]]):
         print(" ".join(line))
     print()
 
-
+t1 = perf_counter()
 with open("2023/dag_10/input.txt") as file:
     grid = [list(line.strip("\n")) for line in file]
     
@@ -97,11 +98,16 @@ while n_pos[0] != n_pos[1]:
     n_pos = nn_pos.copy()
 count += 1
 
+t2 = perf_counter()
+
 print("\n-------------PART 1---------------\n")
 
-pprint(count)
+print(count)
+print(f"\nTook {t2-t1} seconds.")
 
 print("\n-------------PART 2---------------\n")
+
+t3 = perf_counter()
 
 n_grid = []
 for y, line in enumerate(grid):
@@ -156,23 +162,24 @@ for y, line in enumerate(n_grid):
         vertical = [n_grid[i][x] for i in range(len(n_grid))]
         leftside, rightside = horizontal[:x], horizontal[x + 1:]
         topside, botside = vertical[:y], vertical[y + 1:]
-        # print(leftside)
-        # print(rightside)
-        # print(topside)
-        # print(botside)
-        # print()   
+   
         crossovers = []
         crossovers.append(count_crossovers_hor(rightside))
         crossovers.append(count_crossovers_hor(leftside))
         crossovers.append(count_crossovers_vert(topside))
         crossovers.append(count_crossovers_vert(botside))
+        # print(crossovers)
         if all([i % 2 == 1 for i in crossovers]):
             n_grid[y][x] = "I"
             
 i_count = 0
-for line in n_grid:
-    for element in line:
+for y, line in enumerate(n_grid):
+    for x, element in enumerate(line):
         if element == "I":
             i_count += 1
-            
+            # print(y, x)
+
+t4 = perf_counter()
+
 print(i_count)
+print(f"\nTook {t4-t3} seconds.\n")
