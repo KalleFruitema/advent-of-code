@@ -34,52 +34,67 @@ if left.symbol in "-LF":
     n_pos.append(left)
 if bottom.symbol in "|LJ":
     n_pos.append(bottom)
-
+print(start.get())
 count = 0
 all_pos = [start, *n_pos.copy()]
 # pprint(n_pos)
+# pprint(grid)
+# print(type(n_pos[0]))
+# print(type(start))
+# print(start == start)
+
+
+def compare(possible: tuple[Location, Location], all_pos: list[Location]):
+    for n_loc in possible:
+        for a_loc in all_pos:
+            # print(n_loc.get()[0], a_loc.get()[0])
+            if n_loc.get()[0] == a_loc.get()[0]:
+                break
+        else:
+            return n_loc
+
 pprint(grid)
-print(type(n_pos[0]))
-print(type(start))
-print(start == start)
 while n_pos[0] != n_pos[1]:
-    print(type(n_pos[0]))
+    print(n_pos)
     nn_pos = []
     for location in n_pos:
         loc, pipe = location.get()
         if pipe == '-':
-            possible = 
-            for i in range(-1, 2, 2):
-                if (n_loc := Location((loc[0], loc[1] + i), grid[loc[0]][loc[1] + i])) not in all_pos:
-                    nn_pos.append(n_loc)
+            possible = (Location((loc[0], loc[1] - 1), grid[loc[0]][loc[1] - 1]),
+                        Location((loc[0], loc[1] + 1), grid[loc[0]][loc[1] + 1]))
+            f = compare(possible, all_pos)
+            print(f)
+            nn_pos.append(f)
         elif pipe == '|':
-            for i in range(-1, 2, 2):
-                if (n_loc := Location((loc[0] + i, loc[1]), grid[loc[0] + i][loc[1]])) not in all_pos:
-                    nn_pos.append(n_loc)
+            possible = (Location((loc[0] - 1, loc[1]), grid[loc[0] - 1][loc[1]]),
+                        Location((loc[0] + 1, loc[1]), grid[loc[0] + 1][loc[1]]))
+            f = compare(possible, all_pos)
+            print(f)
+            nn_pos.append(f)
         elif pipe == "F":
             possible = (Location((loc[0] + 1, loc[1]), grid[loc[0] + 1][loc[1]]),
                         Location((loc[0], loc[1] + 1), grid[loc[0]][loc[1] + 1]))
-            for n_loc in possible:
-                if n_loc not in all_pos:
-                    nn_pos.append(n_loc)
+            f = compare(possible, all_pos)
+            print(f)
+            nn_pos.append(f)
         elif pipe == "7":
             possible = (Location((loc[0] + 1, loc[1]), grid[loc[0] + 1][loc[1]]),
                         Location((loc[0], loc[1] - 1), grid[loc[0]][loc[1] - 1]))
-            for n_loc in possible:
-                if n_loc not in all_pos:
-                    nn_pos.append(n_loc)
+            f = compare(possible, all_pos)
+            print(f)
+            nn_pos.append(f)
         elif pipe == "J":
             possible = (Location((loc[0] - 1, loc[1]), grid[loc[0] - 1][loc[1]]),
                         Location((loc[0], loc[1] - 1), grid[loc[0]][loc[1] - 1]))
-            for n_loc in possible:
-                if n_loc not in all_pos:
-                    nn_pos.append(n_loc)
+            f = compare(possible, all_pos)
+            print(f)
+            nn_pos.append(f)
         elif pipe == "L":
             possible = (Location((loc[0] - 1, loc[1]), grid[loc[0] - 1][loc[1]]),
                         Location((loc[0], loc[1] + 1), grid[loc[0]][loc[1] + 1]))
-            for n_loc in possible:
-                if n_loc not in all_pos:
-                    nn_pos.append(n_loc)
+            f = compare(possible, all_pos)
+            print(f)
+            nn_pos.append(f)
     count += 1
     print("NIEUW", nn_pos)
     all_pos.extend(nn_pos)
