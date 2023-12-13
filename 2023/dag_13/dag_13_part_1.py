@@ -47,7 +47,7 @@ def check_rows(mirror):
 
 
 def transpose(mirror):
-    return [line for line in zip(*mirror)]
+    return list(zip(*mirror))
 
 
 totalvert = 0

@@ -1,5 +1,6 @@
 from pprint import pprint
 from more_itertools import distinct_permutations
+import json
 
 
 def print_grid(grid: list[list[str]]):
@@ -34,10 +35,10 @@ all_possible = []
 total_count = 0
 c = 1
 for line, instruc in zip(grid, instructs):
-    unfolded = list("?".join(["".join(line) for _ in range(5)]))
-    unfold_instruc = instruc * 5
-    leftover = sum(unfold_instruc) - unfolded.count("#")
-    x = unfolded.count("?")
+    # unfolded = list("?".join(["".join(line) for _ in range(5)]))
+    # unfold_instruc = instruc * 5
+    leftover = sum(instruc) - line.count("#")
+    x = line.count("?")
     to_input = []
     for _ in range(x):
         if leftover:
@@ -47,9 +48,9 @@ for line, instruc in zip(grid, instructs):
             to_input.append(".")
     possible = distinct_permutations(to_input)
     line_count = 0
-    # for possibility in possible:
-    #     if check_if_valid(unfolded.copy(), possibility, unfold_instruc):
-    #         line_count += 1
+    for possibility in possible:
+        if check_if_valid(line.copy(), possibility, instruc):
+            line_count += 1
     print(f"{c}: {line_count}")
     c += 1
     total_count += line_count
