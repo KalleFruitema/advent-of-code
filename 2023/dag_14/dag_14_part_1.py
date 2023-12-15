@@ -1,4 +1,5 @@
 from typing import Any
+import numpy as np
 
 
 def gprint(grid: list[list[Any]]):
@@ -6,6 +7,10 @@ def gprint(grid: list[list[Any]]):
     for line in grid:
         print(" ".join(str(i) for i in line))
     print()
+
+
+def transpose(grid: list[list[Any]]) -> list[list[Any]]:
+    return [list(line) for line in zip(*grid)]
 
 
 def rev_transpose(grid: list[list[Any]]) -> list[list[Any]]:
@@ -22,24 +27,43 @@ def find_last_dot(line: list[str], curr_i: int):
     return new_i
 
 
-with open("2023/dag_14/input.txt", 'r') as file:
+with open("2023/dag_14/input_test1.txt", 'r') as file:
     grid = [list(line.strip()) for line in file]
     
-grid = rev_transpose(grid)
+    
+cache_dict = {}
 
-for ri, line in enumerate(grid):
-    for i in range(len(line)):
-        item = line[i]
-        if item == "O":
-            if "." not in line[i:]:
-                break
-            new_pos = find_last_dot(line[i:], i)
-            grid[ri][i], grid[ri][new_pos] = grid[ri][new_pos], grid[ri][i]
 
-grid = rev_transpose(grid)
+def gravity(grid):
+    new_grid = []
+    for line in grid:
+        global cache_dict
+        n_line = []
+        for part in ("".join(line).split("#")):
+            if tuple(part) in cache_dict:
+                n_line.append(cache_dict[tuple(part)])
+            else:
+                sort_part = "".join(sorted(part))
+                cache_dict.update({
+                    part: sort_part
+                })
+                n_line.append(sort_part)
+        new_grid.append(list("#".join(n_line)))
+    return new_grid
+
+
+gprint(grid)
+grid = np.rot90(np.rot90(np.rot90(grid)))
+for _ in range(1_000_000_000):
+    for _ in range(4):
+        grid = gravity(grid)
+        grid = np.rot90(np.rot90(np.rot90(grid)))
+grid = np.rot90(grid)
+gprint(grid)
+
 
 total = 0
 for i, line in enumerate(grid[::-1], start=1):
-    total += line.count("O") * i
+    total += list(line).count("O") * i
     
 print(total)
