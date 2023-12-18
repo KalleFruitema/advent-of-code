@@ -4,3 +4,17 @@ def input():
         
     return content
 
+
+def gprint(grid):
+    print()
+    for line in grid:
+        print(" ".join(str(i) for i in line))
+    print()
+    
+    
+def transpose(grid):
+    return list(zip(*grid))
+
+
+grid = input()
+gprint(grid)

@@ -1,12 +1,9 @@
-from typing import Any
-
-
-def gprint(grid: list[list[Any]]):
+def gprint(grid):
     print()
     for line in grid:
         print(" ".join(str(i) for i in line))
     print()
     
     
-def transpose(grid: list[list[Any]]) -> list[list[Any]]:
-    return list(zip(*grid))
+def transpose(grid):
+    return tuple(zip(*grid))
