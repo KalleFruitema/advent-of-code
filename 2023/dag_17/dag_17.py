@@ -1,3 +1,7 @@
+from heapq import heappush, heappop, nsmallest, merge
+from random import randint
+
+
 def input():
     with open("2023/dag_17/input_test1.txt", 'r') as file:
         content = [line.strip() for line in file]
@@ -12,9 +16,17 @@ def gprint(grid):
     print()
     
     
-def transpose(grid):
-    return list(zip(*grid))
+def find_path(grid):
+    queue = []
+    
 
 
-grid = input()
-gprint(grid)
+def main():    
+    grid = input()
+    gprint(grid)
+    path = find_path(grid)
+    
+    
+if __name__ == "__main__":
+    main()
+    
