@@ -7,8 +7,8 @@ with open("2024/day_03/input.txt") as file:
 result = re.findall(r"(do(?:n\'t)?)\(\)|mul\((\d+),(\d+)\)", data)
 
 total = 0
-
 enable = True
+
 for i in result:
     if i[0] == "do":
         enable = True
