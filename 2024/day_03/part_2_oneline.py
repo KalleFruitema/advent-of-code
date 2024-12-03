@@ -1,0 +1,2 @@
+total = sum((int(i[1]) * int(i[2]) for i in __import__('re').findall(r"(do(?:n\'t)?)\(\)|mul\((\d+),(\d+)\)", open("2024/day_03/input.txt").read().strip()) if (not i[0] or not (enable := i[0])) and enable == "do") if (enable := "do") else (0,))
+print(total)
