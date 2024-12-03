@@ -1,9 +1,5 @@
-import numpy as np
-# from useful import *
-
-
 with open("2024/day_02/input.txt") as file:
-    data = [[int(i) for i in line.strip().split()] for line in file]
+    data = [[int(i) for i in line.strip().split()] for line in file if line.strip() != ""]
 
 
 total = 0
