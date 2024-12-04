@@ -1,0 +1,1 @@
+echo "do()"$(cat input.txt)"don't()" | grep -Po "do\(\).*?don\'t\(\)" | tr -d '\n' | perl -nE '$total=0; while (/mul\((\d+),(\d+)\)/g) { $total += $1 * $2; } say $total'
