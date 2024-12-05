@@ -30,7 +30,7 @@ for i, page in enumerate(pages):
                 after.clear()
                 i = len(page) - 1
                 
-    if wrong is True:
+    if wrong:
         page_nums.append(int(page[len(page) // 2]))
         
 print(sum(page_nums))
