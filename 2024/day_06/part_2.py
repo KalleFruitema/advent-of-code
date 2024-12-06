@@ -50,7 +50,7 @@ total = 0
 
 for px, py in set(i[:2] for i in covered.copy()):
     covered.clear()
-    data[py][px] = "%"
+    data[py][px] = "O"
     infinite= walk_path(guard[0], guard[1], directions[0], part2=True)
     data[py][px] = "."
     total += infinite
