@@ -34,4 +34,3 @@ for sx, sy in starts:
     count = 0
     
 print(total)
-
