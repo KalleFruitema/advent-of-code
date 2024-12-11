@@ -1,4 +1,4 @@
-from functools import lru_cache
+from functools import cache
 from time import perf_counter
 
 
@@ -8,18 +8,18 @@ with open("2024/day_11/input.txt") as file:
 blinks = 75
 
 
-@lru_cache
+@cache
 def times_2024(number: int):
     return number * 2024
 
 
-@lru_cache
+@cache
 def half_split_string(text: str):
     halfway = len(text) >> 1
     return int(text[:halfway]), int(text[halfway:])
 
 
-@lru_cache
+@cache
 def calculate_stones(num: int, i):
     if i == 0:
         return 1
