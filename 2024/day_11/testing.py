@@ -1,11 +1,5 @@
+from collections import defaultdict
 from functools import lru_cache
-from time import perf_counter
-
-
-with open("2024/day_11/input.txt") as file:
-    data = list(map(int, file.read().strip().split()))
-
-blinks = 75
 
 
 @lru_cache
@@ -19,8 +13,10 @@ def half_split_string(text: str):
     return int(text[:halfway]), int(text[halfway:])
 
 
+# seen = defaultdict(lambda: [])
 @lru_cache
 def calculate_stones(num: int, i):
+    # seen[blinks+1-i].append(num)
     if i == 0:
         return 1
     if num == 0:
@@ -31,11 +27,13 @@ def calculate_stones(num: int, i):
     else:
         return calculate_stones(times_2024(num), i - 1)
 
-t1 = perf_counter()
-total = 0
 
-for stone in data:
-    total += calculate_stones(stone, blinks)
+blinks = 75
 
-print(total)
-print(f"Took: {perf_counter() - t1} seconds")
+
+
+# for i in range(1, blinks + 1):
+#     print(calculate_stones(0, i))
+
+# for i, nums in seen.items():
+#     print(f"\niter {i}\tlength {len(nums)}\n{' '.join(map(str, nums))}")
