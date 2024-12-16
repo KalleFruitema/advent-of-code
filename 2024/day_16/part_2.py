@@ -55,7 +55,7 @@ def backtrack(min_turns):
         x, y, remaining_score = queue.popleft()
 
         for i, (dx, dy) in enumerate(directions):
-            nx, ny = x - dx, y - dy  # Reverse direction
+            nx, ny = x - dx, y - dy
 
             if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] != "#":
                 for d in range(4):
