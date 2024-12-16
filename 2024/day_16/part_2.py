@@ -60,7 +60,7 @@ def backtrack(min_turns):
             if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] != "#":
                 for d in range(4):
                     new_remaining_score = remaining_score - (1000 if d != i else 0) - 1
-                    if (nx, ny, d) in seen and seen[(nx, ny, d)] == new_remaining_score:
+                    if seen.get((nx, ny, d)) == new_remaining_score:
                         best_tiles.add((nx, ny))
                         queue.append((nx, ny, new_remaining_score))
 
