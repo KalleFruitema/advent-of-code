@@ -4,11 +4,10 @@ import re
 with open("2024/day_17/input.txt") as file:
     registers, program = file.read().strip().split("\n\n")
     
-A, B, C = 0, 0, 0
-program = list(map(int, re.findall(r"-?\d+", program.strip())))
+A, B, C = map(int, re.findall(r"-?\d+", registers.strip()))
+g_program = list(map(int, re.findall(r"-?\d+", program.strip())))
 pointer = 0
-output = []
-
+    
 
 def get_combo(literal: int, A, B, C) -> int:
     if literal < 4:
@@ -63,25 +62,30 @@ def cdv(literal: int) -> None:
 
 instructions = [adv, bxl, bst, jnz, bxc, out, bdv, cdv]
 
-oA = 0
-while True:
-    output = []
+
+def run(a_val: int):
+    global A, B, C, pointer
+    A = a_val
     pointer = 0
-    i = 0
-    A = oA
-    while pointer < len(program):
-        operand, literal = instructions[program[pointer]], program[pointer + 1]
+    while pointer < len(g_program):
+        operand, literal = instructions[g_program[pointer]], g_program[pointer + 1]
         pointer += 2
         result = operand(literal)
         if not result is None:
-            if program[i] == result:
-                output.append(result)
-                i += 1
-            else:
-                break
-    else:
-        if program == output:
-            break
-    oA += 1
-   
-print(oA)
+            return result
+    
+    
+def find_a(program, ans: int):
+    if program == []: return ans
+    for i in range(0, 8):
+        a = (ans << 3) + i
+        output = run(a)
+        if output == program[-1]:
+            sub = find_a(program[:-1], a)
+            if sub is None:
+                continue
+            return sub
+    
+
+a = find_a(g_program, 0)
+print(a)

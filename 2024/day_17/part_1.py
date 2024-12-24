@@ -63,7 +63,6 @@ def cdv(literal: int) -> None:
 
 instructions = [adv, bxl, bst, jnz, bxc, out, bdv, cdv]
 
-
 while pointer < len(program):
     operand, literal = instructions[program[pointer]], program[pointer + 1]
     pointer += 2
