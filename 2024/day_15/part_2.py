@@ -1,18 +1,19 @@
-class Box:
-    def __init__(self, x, y) -> None:
-        self.x = x
-        self.y = y
-        
-        
-    def __repr__(self) -> str:
-        return "[]"
-
-
-
-with open("2024/day_15/input.txt") as file:
-    grid, moves = file.read().strip().split("\n\n")
-    grid = [list(line.strip()) for line in grid.split("\n")]
+with open("2024/day_15/test3_input.txt") as file:
+    ogrid, moves = file.read().strip().split("\n\n")
+    grid = []
+    for line in ogrid.split("\n"):
+        n_line = []
+        for char in line.strip():
+            if char == "O":
+                n_line.extend("[]")
+            elif char == "@":
+                n_line.extend("@.")
+            else:
+                n_line.extend(char*2)
+        grid.append(n_line)
     moves = moves.strip().replace("\n", "")
+
+
 
 def gprint(grid):
     print()
@@ -28,44 +29,23 @@ move_dict = {
     "<": (-1, 0)
 }
 
-for y, row in enumerate(grid):
-    for x, val in enumerate(row):
-        if val == "@":
-            start_x, start_y = x, y
+gprint(grid)
 
 
-def move_robot(x, y, dx, dy):
-    global grid
-    nx, ny = x + dx, y + dy
-    if grid[ny][nx] == "#":
-        return x, y
-    elif grid[ny][nx] == "O":
-        while grid[ny][nx] == "O":
-            nx, ny = nx + dx, ny + dy
-        else:
-            if grid[ny][nx] == "#":
-                return x, y
-            else:
-                grid[ny][nx] = "O"
-                grid[y + dy][x + dx] = "@"
-                grid[y][x] = "."
-                return x + dx, y + dy
-    else:
-        grid[ny][nx] = "@"
-        grid[y][x] = "."
-        return nx, ny
-
-
-x, y = start_x, start_y
-for move in moves:
-    dx, dy = move_dict[move]
-    x, y = move_robot(x, y, dx, dy, move)
-    
-    
-total = 0
-for y, row in enumerate(grid):
-    for x, val in enumerate(row):
-        if val == "O":
-            total += 100* y + x
-            
-print(total)
+def look_ahead(x, y, dx, dy, boxes: list[tuple[int, int]]):
+    boxes.append((x, y))
+    for ex in range(0, 2):
+        nx1, ny1 = x + dx, y + dy
+        nx2, ny2 = x + dx + ex, y + dy + ex
+        if grid[ny1][nx1] == "#" or grid[ny2][nx2] == "#":
+            return -1
+        elif grid[ny1][nx1] == "[":
+            return look_ahead(nx1, ny1, dx, dy, boxes)
+        elif grid[ny2][nx2] == "[":
+            return look_ahead(nx2, ny2, dx, dy, boxes)
+        elif grid[ny1][nx1] == "]":
+            return look_ahead(nx1 - 1, ny1 - 1, dx, dy, boxes)
+        elif grid[ny2][nx2] == "]":
+            return look_ahead(nx2 - 1, ny2 - 1, dx, dy, boxes)
+        elif grid[ny1][nx1] == "." or grid[ny2][nx2] == ".":
+            return boxes
