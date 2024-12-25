@@ -1,12 +1,53 @@
 from collections import deque
 from functools import cache
 from itertools import product
-from pprint import pprint
 import re
 
 
-with open("2024/day_21/input.txt") as file:
-    data = [line.strip() for line in file if line.strip() != ""]
+def compute_seqs(keypad):
+    pos = {}
+    for y, row in enumerate(keypad):
+        for x, val in enumerate(row):
+            if val == "#": continue
+            pos[val] = (x, y)
+    seqs = {}
+    for a, a_loc in pos.items():
+        for b, b_loc in pos.items():
+            if a == b:
+                seqs[(a, b)] = ["A"]
+                continue
+            
+            possible = []
+            queue = deque([(a_loc, "")])
+            shortest = float("inf")
+            
+            while queue:
+                (x, y), moves = queue.popleft()
+                for move, (dx, dy) in directions.items():
+                    nx, ny = x + dx, y + dy
+                    if nx < 0 or ny < 0 or nx >= len(keypad[0]) or ny >= len(keypad): continue
+                    if keypad[ny][nx] == "#": continue
+                    if keypad[ny][nx] == b:
+                        if shortest < len(moves) + 1: 
+                            break
+                        shortest = len(moves) + 1
+                        possible.append(moves + move + "A")
+                    else:
+                        queue.append(((nx, ny), moves + move))
+                else:
+                    continue
+                break
+            
+            seqs[(a, b)] = possible
+    return seqs
+
+
+def solve(target, seqs):
+    options = ["".join(i) for i in product(*[seqs[(a, b)] for a, b in zip("A" + target, target)])]
+    return options
+    
+    
+directions = {"^": (0, -1), ">": (1, 0), "v": (0, 1), "<": (-1, 0)} # N O Z W
 
 numpad = [
     ["7", "8", "9"],
@@ -15,88 +56,44 @@ numpad = [
     ["#", "0", "A"]
 ]
 
+numseqs = compute_seqs(numpad)
+
 dirpad = [
     ["#", "^", "A"],
     ["<", "v", ">"]
 ]
 
-numdict = {}
-
-for y, row in enumerate(numpad):
-    for x, val in enumerate(row):
-        numdict[val] = (x, y)
-        
-dirdict = {}
-
-for y, row in enumerate(dirpad):
-    for x, val in enumerate(row):
-        dirdict[val] = (x, y) 
-
-
-directions = {"^": (0, -1), ">": (1, 0), "v": (0, 1), "<": (-1, 0)} # N O Z W
-
-def custom_sort(char):
-    return "<>v^".index(char)
+dirseqs = compute_seqs(dirpad) 
+dir_lengths = {k: len(v[0]) for k, v in dirseqs.items()}
 
 
 @cache
-def move(x, y, gx, gy, keypad):
-    grid = numpad if keypad == "num" else dirpad
-    queue = deque([(0, "", x, y)])
-    seen = set()
-    possible = []
+def compute_length(a, b, depth=2):
+    if depth == 1:
+        return dir_lengths[(a, b)]
     shortest = float("inf")
-    while queue:
-        steps, moves, x, y = queue.popleft()
+    for seq in dirseqs[(a, b)]:
+        length = 0
+        for c, d in zip("A" + seq, seq):
+            length += compute_length(c, d, depth - 1 )
+        shortest = min(shortest, length)
+    return shortest
         
-        if steps > shortest:
-            break
-        
-        if (x, y) == (gx, gy):
-            possible.append(moves + "A")
-            shortest = steps
-            continue
-            
-        if (x, y, moves) in seen:
-            continue
-        
-        seen.add((x, y, moves))
-        
-        for char, (dx, dy)  in directions.items():
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] != "#":
-                queue.append((steps + 1, moves + char, nx, ny))
-                
-    return possible
 
-total = 0    
+with open("2024/day_21/input.txt") as file:
+    data = [line.strip() for line in file if line.strip() != ""]
+
+total = 0
 
 for line in data:
-    x, y = numdict["A"]
-    robot1 = []
-    for char in line:
-        gx, gy = numdict[char]
-        robot1.append(move(x, y, gx, gy, "num"))
-        x, y = gx, gy
-    robot1 = ["".join(i) for i in product(*robot1)]
-
-    prev_robot = robot1
-    for i in range(2):
-        n_robot = []
-        x, y = dirdict["A"]
-        for possible in prev_robot:
-            tmp = []
-            for char in possible:
-                gx, gy = dirdict[char]
-                tmp.append(move(x, y, gx, gy, "dir"))
-                x, y = gx, gy
-            n_robot.append(tmp)
+    robot1 = solve(line, numseqs)
+    shortest = float("inf")
+    for seq in robot1:
+        length = 0
+        for a, b in zip("A" + seq, seq):
+            length += compute_length(a, b, depth=25)
+        shortest = min(shortest, length)
         
-        n_robot = ["".join(i) for x in n_robot for i in product(*x)]
-        minlen = min(map(len, n_robot))
-        n_robot = [i for i in n_robot if len(i) == minlen]
-        prev_robot = n_robot
+    total += shortest * int(re.findall(r"\d+", line)[0])
     
-    total += len(min(n_robot, key=len)) * int(re.findall(r"\d+", line)[0])
-
 print(total)
