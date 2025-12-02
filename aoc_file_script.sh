@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ $# -eq 0 ]
 then
   read -p "Enter year: " year
@@ -14,7 +15,7 @@ do
   touch input.txt test_input.txt
   for y in {1..2}
   do
-    echo -e "with open(\"2024/day_$i/test_input.txt\") as file:\n    data = [line.strip() for line in file if line.strip() != \"\"]\n" > "part_$y.py"
+    echo -e "with open(\"$year/day_$i/test_input.txt\") as file:\n    data = [line.strip() for line in file if line.strip() != \"\"]\n" > "part_$y.py"
   done
   cd ..
 done
