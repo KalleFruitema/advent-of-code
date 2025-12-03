@@ -1,3 +1,14 @@
-with open("2025/day_03/test_input.txt") as file:
-    data = [line.strip() for line in file if line.strip() != ""]
+with open("input.txt") as file:
+    data = [tuple(map(int, list(line.strip()))) 
+            for line in file if line.strip() != ""]
+    
 
+jolts = []
+
+for line in data:
+    m = max(line[:-1])
+    mloc = line.index(m)
+    m2 = max(line[mloc+1:])
+    jolts.append(int(f"{m}{m2}"))
+
+print(sum(jolts))
