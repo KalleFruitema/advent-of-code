@@ -13,10 +13,10 @@ def beam(y, x):
         if char == "^":
             ends += beam(y + i, x - 1)
             ends += beam(y + i, x + 1)
-            
+
             break
         if y + i == len(grid) - 1:
-            return ends + 1
+            return 1
     return ends
 
 
